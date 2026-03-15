@@ -13,12 +13,15 @@ ENV PYTHONUNBUFFERED=1
 
 # Install CPU-only torch first (tiny vs full torch = 800MB vs 3GB)
 RUN pip install --no-cache-dir \
-    torch==2.2.2+cpu \
+    "torch==2.1.2" \
+    "torchvision==0.16.2" \
     --index-url https://download.pytorch.org/whl/cpu
 
-# Install remaining deps
+# Install remaining deps (sentence-transformers pinned to match torch)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir \
+    "sentence-transformers==2.7.0" \
+    && pip install --no-cache-dir -r requirements.txt
 
 # Copy source
 COPY . .
