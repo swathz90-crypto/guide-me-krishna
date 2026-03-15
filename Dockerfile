@@ -1,28 +1,30 @@
 FROM python:3.11-slim
 
-# System deps for sentence-transformers / chromadb
+# Minimal system deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Set PYTHONPATH so `src` package is importable
 ENV PYTHONPATH=/app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install Python deps first (layer cache)
+# Install CPU-only torch first (tiny vs full torch = 800MB vs 3GB)
+RUN pip install --no-cache-dir \
+    torch==2.2.2+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining deps
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source
 COPY . .
 
-# Make startup script executable
 RUN chmod +x start.sh
 
-# Expose port
 EXPOSE 8000
 
-# Start — indexes corpus if needed, then starts server
 CMD ["bash", "start.sh"]
