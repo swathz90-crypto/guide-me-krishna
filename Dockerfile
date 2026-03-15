@@ -21,9 +21,6 @@ COPY . .
 # Make startup script executable
 RUN chmod +x start.sh
 
-# Pre-download the sentence-transformers model so cold starts are fast
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
-
 # Expose port
 EXPOSE 8000
 
