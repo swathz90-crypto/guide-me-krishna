@@ -11,7 +11,10 @@ ENV PYTHONPATH=/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install CPU-only torch first (tiny vs full torch = 800MB vs 3GB)
+# Pin numpy first before anything else installs it
+RUN pip install --no-cache-dir "numpy==1.26.4"
+
+# Install CPU-only torch
 RUN pip install --no-cache-dir \
     "torch==2.2.2" \
     "torchvision==0.17.2" \
@@ -20,6 +23,9 @@ RUN pip install --no-cache-dir \
 # Install remaining deps
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Force numpy back to 1.x in case anything upgraded it
+RUN pip install --no-cache-dir "numpy==1.26.4"
 
 # Copy source
 COPY . .
