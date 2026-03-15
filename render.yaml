@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: guide-me-krishna
+    runtime: docker
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # Set this manually in Render dashboard
+      - key: LLM_MODEL
+        value: groq/llama-3.3-70b-versatile
+      - key: CHROMA_DIR
+        value: /data/chroma
+    disk:
+      name: chroma-data
+      mountPath: /data/chroma
+      sizeGB: 1

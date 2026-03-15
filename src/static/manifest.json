@@ -1,0 +1,41 @@
+{
+  "name": "Guide Me Krishna",
+  "short_name": "Krishna",
+  "description": "Divine guidance from the Bhagavad Gita — ask any question about life, duty, fear, or the self.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c0601",
+  "theme_color": "#0c0601",
+  "lang": "en",
+  "scope": "/",
+  "icons": [
+    { "src": "/static/icons/icon-72.png",   "sizes": "72x72",   "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-96.png",   "sizes": "96x96",   "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-128.png",  "sizes": "128x128", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-144.png",  "sizes": "144x144", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-152.png",  "sizes": "152x152", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-192.png",  "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-384.png",  "sizes": "384x384", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [
+    {
+      "src": "/static/krishna_arjuna.jpg.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Guide Me Krishna — Chat Screen"
+    }
+  ],
+  "categories": ["lifestyle", "education", "spirituality"],
+  "shortcuts": [
+    {
+      "name": "Ask Krishna",
+      "short_name": "Ask",
+      "description": "Ask a question to the Gita",
+      "url": "/",
+      "icons": [{ "src": "/static/icons/icon-96.png", "sizes": "96x96" }]
+    }
+  ]
+}

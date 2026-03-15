@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Guide Me Krishna</title>
+  <link rel="manifest" href="/static/manifest.json" />
+  <meta name="theme-color" content="#0c0601" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Guide Me Krishna" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #f5c842;
+      --gold-soft: #d4a830;
+      --gold-dim: rgba(245,200,66,0.22);
+      --bg-deep: #0c0601;
+      --text-bright: #f2eada;
+      --text-mid: #d8ccb0;
+      --text-dim: #9a8a68;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Lato', sans-serif;
+      background: #000;
+    }
+
+    /* ── PHONE SHELL (desktop only) ── */
+    .app-shell {
+      width: 100%; max-width: 420px;
+      height: 100vh; height: 100dvh;
+      margin: 0 auto;
+      display: flex; flex-direction: column;
+      background: var(--bg-deep);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    }
+
+    /* Background image */
+    .app-shell::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('/static/krishna_arjuna.jpg.png');
+      background-size: cover; background-position: center top;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      position: relative; z-index: 10;
+      padding: calc(var(--safe-top) + 0.9rem) 1rem 0.9rem;
+      background: rgba(8,4,0,0.96);
+      border-bottom: 1px solid var(--gold-dim);
+      display: flex; align-items: center; gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .header-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #c8860a, #f0b020);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(245,200,66,0.4);
+    }
+    .header-info { flex: 1; min-width: 0; }
+    .header-name {
+      font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700;
+      color: var(--gold); letter-spacing: 0.06em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .header-status {
+      font-size: 0.72rem; color: #6dbf6d; margin-top: 0.1rem;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #6dbf6d; display: inline-block;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── CHAT AREA ── */
+    .chat-area {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      padding: 1rem 0.85rem 0.5rem;
+      position: relative; z-index: 2;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    .chat-area::-webkit-scrollbar { width: 3px; }
+    .chat-area::-webkit-scrollbar-thumb { background: rgba(245,200,66,0.2); border-radius: 2px; }
+
+    /* ── WELCOME SCREEN ── */
+    .welcome {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 60vh;
+      text-align: center; padding: 1rem;
+    }
+    .welcome-om {
+      font-size: 4rem; color: var(--gold);
+      text-shadow: 0 0 30px rgba(245,200,66,0.6);
+      animation: omGlow 3s ease-in-out infinite alternate;
+      margin-bottom: 0.8rem;
+    }
+    @keyframes omGlow {
+      from { text-shadow: 0 0 15px rgba(245,200,66,0.4); }
+      to   { text-shadow: 0 0 40px rgba(245,200,66,0.9), 0 0 80px rgba(245,200,66,0.3); }
+    }
+    .welcome-title {
+      font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--gold);
+      letter-spacing: 0.08em; margin-bottom: 0.5rem;
+    }
+    .welcome-sub {
+      font-family: 'Crimson Text', serif; font-style: italic;
+      color: var(--text-dim); font-size: 0.95rem; line-height: 1.7;
+      max-width: 280px;
+    }
+
+    /* ── SAMPLE CHIPS ── */
+    .chips-section { margin-top: 1.5rem; width: 100%; }
+    .chips-label {
+      font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.12em; text-align: center; margin-bottom: 0.7rem;
+    }
+    .chips-grid {
+      display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center;
+    }
+    .chip {
+      background: rgba(180,120,20,0.1);
+      border: 1px solid rgba(200,150,40,0.3);
+      color: #c8a860; padding: 0.4rem 0.85rem; border-radius: 20px;
+      font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
+      font-family: 'Lato', sans-serif; line-height: 1.3;
+      text-align: center;
+    }
+    .chip:active { background: rgba(200,150,40,0.25); color: var(--gold); transform: scale(0.97); }
+
+    /* ── MESSAGES ── */
+    .msg-group { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .msg-group.user { align-items: flex-end; }
+    .msg-group.bot  { align-items: flex-start; }
+
+    .msg-row { display: flex; align-items: flex-end; gap: 0.5rem; max-width: 88%; }
+    .msg-group.user .msg-row { flex-direction: row-reverse; }
+
+    .bot-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #c8860a, #f0b020);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; align-self: flex-end;
+      box-shadow: 0 0 8px rgba(245,200,66,0.3);
+    }
+
+    .bubble {
+      padding: 0.75rem 1rem; border-radius: 18px;
+      line-height: 1.65; font-size: 0.92rem;
+      overflow-wrap: break-word; word-break: break-word;
+      animation: popIn 0.22s ease;
+    }
+    @keyframes popIn { from { opacity:0; transform: scale(0.94) translateY(4px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+    .msg-group.user .bubble {
+      background: linear-gradient(135deg, #7a4a0a, #5a3008);
+      color: #f5edd8; border-bottom-right-radius: 5px;
+      border: 1px solid rgba(245,200,66,0.2);
+    }
+    .msg-group.bot .bubble {
+      background: rgba(18,10,2,0.97);
+      border: 1px solid rgba(245,200,66,0.18);
+      border-bottom-left-radius: 5px; color: var(--text-bright);
+      width: 100%;
+    }
+
+    .answer-text { margin-bottom: 0.8rem; line-height: 1.75; }
+
+    /* Verse card */
+    .verse-card {
+      background: rgba(30,16,4,0.98);
+      border: 1px solid rgba(245,200,66,0.2);
+      border-left: 3px solid var(--gold-soft);
+      border-radius: 10px; padding: 0.85rem 1rem;
+      margin-top: 0.6rem; font-size: 0.85rem;
+    }
+    .verse-id {
+      font-family: 'Cinzel', serif; color: var(--gold);
+      font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem;
+      letter-spacing: 0.06em;
+    }
+    .verse-sanskrit {
+      font-family: 'Crimson Text', serif; font-style: italic;
+      color: #eecfa8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.3rem;
+    }
+    .verse-transliteration {
+      color: #6a5a38; font-size: 0.75rem; font-style: italic;
+      line-height: 1.4; margin-bottom: 0.5rem;
+    }
+    .verse-translation {
+      color: #ccc0a0; line-height: 1.65; font-size: 0.85rem;
+      border-top: 1px solid rgba(245,200,66,0.1); padding-top: 0.5rem;
+    }
+
+    /* Translate bar */
+    .translate-bar {
+      display: flex; align-items: center; gap: 0.4rem;
+      margin-top: 0.75rem; flex-wrap: wrap;
+      padding: 0.5rem 0.7rem;
+      background: rgba(245,200,66,0.04);
+      border: 1px solid rgba(245,200,66,0.1);
+      border-radius: 8px;
+    }
+    .translate-bar select {
+      background: rgba(10,5,1,0.95); border: 1px solid rgba(245,200,66,0.22);
+      color: var(--text-mid); padding: 0.28rem 0.5rem; border-radius: 6px;
+      font-size: 0.78rem; font-family: 'Lato', sans-serif; flex: 1; min-width: 0;
+    }
+    .btn-translate {
+      background: rgba(180,120,20,0.18); border: 1px solid rgba(245,200,66,0.3);
+      color: #d4b870; padding: 0.28rem 0.75rem; border-radius: 6px;
+      font-size: 0.78rem; cursor: pointer; font-family: 'Lato', sans-serif;
+      font-weight: 600; white-space: nowrap; transition: all 0.2s;
+    }
+    .btn-translate:active { background: rgba(245,200,66,0.25); }
+    .btn-translate:disabled { opacity: 0.35; }
+
+    .translated-text {
+      margin-top: 0.6rem; padding: 0.75rem 0.9rem;
+      background: rgba(245,200,66,0.04);
+      border-left: 3px solid rgba(245,200,66,0.35);
+      border-radius: 0 8px 8px 0;
+      color: #e4d8b8; line-height: 1.8; font-size: 0.88rem;
+    }
+
+    .confidence {
+      font-size: 0.65rem; color: #4a4030; margin-top: 0.6rem;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+
+    /* Thinking */
+    .thinking {
+      display: flex; align-items: center; gap: 0.5rem;
+      color: #b8a060; font-size: 0.85rem; padding: 0.5rem 0;
+      font-style: italic; font-family: 'Crimson Text', serif;
+    }
+    .dot { width: 6px; height: 6px; background: var(--gold-soft); border-radius: 50%; animation: bounce 1.3s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+
+    .error-bubble { background: rgba(30,5,5,0.95); border: 1px solid #7a2020; color: #f08888; border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+
+    /* ── INPUT BAR ── */
+    .input-bar {
+      position: relative; z-index: 10; flex-shrink: 0;
+      padding: 0.6rem 0.75rem calc(var(--safe-bottom) + 0.6rem);
+      background: rgba(8,4,0,0.97);
+      border-top: 1px solid var(--gold-dim);
+      display: flex; align-items: flex-end; gap: 0.5rem;
+    }
+    textarea {
+      flex: 1; background: rgba(20,10,2,0.98);
+      border: 1px solid rgba(245,200,66,0.3);
+      color: #f5edd8; padding: 0.65rem 0.9rem;
+      border-radius: 22px; font-size: 0.95rem; resize: none;
+      min-height: 42px; max-height: 110px; line-height: 1.45;
+      font-family: 'Lato', sans-serif; outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    textarea:focus { border-color: rgba(245,200,66,0.5); }
+    textarea::placeholder { color: rgba(180,150,80,0.3); }
+    .send-btn {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(145deg, #c8860a, #f0b020);
+      border: none; color: #1a0800; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 12px rgba(200,140,20,0.5);
+      transition: all 0.2s; font-weight: 700;
+    }
+    .send-btn:active { transform: scale(0.93); }
+    .send-btn:disabled { background: #2a1a08; box-shadow: none; color: #5a4a28; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-avatar">ॐ</div>
+    <div class="header-info">
+      <div class="header-name">Guide Me Krishna</div>
+      <div class="header-status"><span class="status-dot"></span>Gita is with you</div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-area" id="chat">
+    <div class="welcome" id="welcome">
+      <div class="welcome-om">ॐ</div>
+      <div class="welcome-title">Guide Me Krishna</div>
+      <p class="welcome-sub">Whatever weighs on your heart — ask freely. The Gita has spoken to every human struggle.</p>
+      <div class="chips-section">
+        <div class="chips-label">✦ Try asking ✦</div>
+        <div class="chips-grid">
+          <span class="chip" onclick="fillQuery(this)">I feel lost in life</span>
+          <span class="chip" onclick="fillQuery(this)">Fear of failure</span>
+          <span class="chip" onclick="fillQuery(this)">How to stay calm?</span>
+          <span class="chip" onclick="fillQuery(this)">Controlling anger</span>
+          <span class="chip" onclick="fillQuery(this)">What is my duty?</span>
+          <span class="chip" onclick="fillQuery(this)">Finding peace of mind</span>
+          <span class="chip" onclick="fillQuery(this)">Soul and death</span>
+          <span class="chip" onclick="fillQuery(this)">Why do bad people succeed?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT BAR -->
+  <div class="input-bar">
+    <textarea id="query" placeholder="Ask Krishna anything…" rows="1"></textarea>
+    <button class="send-btn" id="send" title="Ask">➤</button>
+  </div>
+
+</div>
+
+<script>
+  const chat = document.getElementById('chat');
+  const welcome = document.getElementById('welcome');
+  const queryEl = document.getElementById('query');
+  const sendBtn = document.getElementById('send');
+
+  const LANGUAGES = {
+    hi: 'Hindi', te: 'Telugu', bn: 'Bengali', or: 'Odia',
+    kn: 'Kannada', ta: 'Tamil', ml: 'Malayalam', mr: 'Marathi', gu: 'Gujarati'
+  };
+
+  function fillQuery(el) {
+    queryEl.value = el.textContent; queryEl.focus();
+    autoResize();
+  }
+
+  function autoResize() {
+    queryEl.style.height = 'auto';
+    queryEl.style.height = Math.min(queryEl.scrollHeight, 110) + 'px';
+  }
+
+  queryEl.addEventListener('input', autoResize);
+  queryEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  sendBtn.addEventListener('click', sendMessage);
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderBotBubble(data) {
+    const rawAnswer = data.answer || '';
+    const encoded = encodeURIComponent(rawAnswer);
+    let html = `<div class="answer-text">${escHtml(rawAnswer).replace(/\n\n/g,'</p><p style="margin-top:0.6rem">').replace(/\n/g,'<br/>')}</div>`;
+    html += `<div class="translated-area"></div>`;
+    html += `<div class="translate-bar">
+      <span style="font-size:0.72rem;color:#8a7a50;">🌐</span>
+      <select class="lang-select">
+        ${Object.entries(LANGUAGES).map(([v,l]) => `<option value="${v}">${l}</option>`).join('')}
+      </select>
+      <button class="btn-translate" data-text="${encoded}" onclick="translateAnswer(this)">Translate</button>
+    </div>`;
+    if (data.citedVerses && data.citedVerses.length > 0) {
+      for (const v of data.citedVerses) {
+        html += `<div class="verse-card">
+          <div class="verse-id">✦ Bhagavad Gita · ${escHtml(v.verseId)}</div>
+          ${v.sanskrit ? `<div class="verse-sanskrit">${escHtml(v.sanskrit)}</div>` : ''}
+          ${v.transliteration ? `<div class="verse-transliteration">${escHtml(v.transliteration)}</div>` : ''}
+          <div class="verse-translation">${escHtml(v.translation)}</div>
+        </div>`;
+      }
+    }
+    if (data.confidence != null) {
+      html += `<div class="confidence">✦ Relevance: ${Math.round(data.confidence * 100)}%</div>`;
+    }
+    return html;
+  }
+
+  async function translateAnswer(btn) {
+    const bar = btn.closest('.translate-bar');
+    const langCode = bar.querySelector('.lang-select').value;
+    const text = decodeURIComponent(btn.dataset.text);
+    const bubble = btn.closest('.bubble');
+    const area = bubble.querySelector('.translated-area');
+    const answerDiv = bubble.querySelector('.answer-text');
+    btn.disabled = true; btn.textContent = '…';
+    try {
+      const res = await fetch('/translate', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, language: langCode })
+      });
+      const data = await res.json();
+      if (res.ok && data.translated) {
+        const langName = LANGUAGES[langCode];
+        if (answerDiv) answerDiv.style.display = 'none';
+        if (area) area.innerHTML = `<div class="translated-text">
+          <span style="font-size:0.65rem;color:#8a7a50;text-transform:uppercase;letter-spacing:0.1em;">${langName}</span><br/><br/>
+          ${escHtml(data.translated).replace(/\n/g,'<br/>')}
+        </div>`;
+        bar.innerHTML = `<button class="btn-translate" onclick="showEnglish(this, ${JSON.stringify(text).replace(/"/g,'&quot;')})">🔙 English</button>`;
+      } else {
+        btn.disabled = false; btn.textContent = 'Translate';
+      }
+    } catch(e) {
+      btn.disabled = false; btn.textContent = 'Translate';
+    }
+  }
+
+  function showEnglish(btn, originalText) {
+    const bubble = btn.closest('.bubble');
+    const area = bubble.querySelector('.translated-area');
+    const answerDiv = bubble.querySelector('.answer-text');
+    if (answerDiv) answerDiv.style.display = '';
+    if (area) area.innerHTML = '';
+    const encoded = encodeURIComponent(originalText);
+    btn.closest('.translate-bar').innerHTML = `
+      <span style="font-size:0.72rem;color:#8a7a50;">🌐</span>
+      <select class="lang-select">
+        ${Object.entries(LANGUAGES).map(([v,l]) => `<option value="${v}">${l}</option>`).join('')}
+      </select>
+      <button class="btn-translate" data-text="${encoded}" onclick="translateAnswer(this)">Translate</button>`;
+  }
+
+  function appendUserMsg(text) {
+    const g = document.createElement('div');
+    g.className = 'msg-group user';
+    g.innerHTML = `<div class="msg-row"><div class="bubble">${escHtml(text)}</div></div>`;
+    chat.appendChild(g);
+    scrollBottom();
+  }
+
+  function appendBotMsg(html) {
+    const g = document.createElement('div');
+    g.className = 'msg-group bot';
+    g.innerHTML = `<div class="msg-row">
+      <div class="bot-avatar">ॐ</div>
+      <div class="bubble">${html}</div>
+    </div>`;
+    chat.appendChild(g);
+    scrollBottom();
+    return g;
+  }
+
+  function appendThinking() {
+    const g = document.createElement('div');
+    g.className = 'msg-group bot'; g.id = 'thinking';
+    g.innerHTML = `<div class="msg-row">
+      <div class="bot-avatar">ॐ</div>
+      <div class="bubble"><div class="thinking"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+    </div>`;
+    chat.appendChild(g); scrollBottom();
+  }
+
+  function removeThinking() { const t = document.getElementById('thinking'); if (t) t.remove(); }
+  function scrollBottom() { chat.scrollTop = chat.scrollHeight; }
+
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+
+  async function sendMessage() {
+    const query = queryEl.value.trim();
+    if (!query) return;
+    if (welcome) welcome.style.display = 'none';
+    appendUserMsg(query);
+    queryEl.value = ''; queryEl.style.height = 'auto';
+    sendBtn.disabled = true;
+    appendThinking();
+    try {
+      const res = await fetch('/query', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, language: 'en', topK: 1 })
+      });
+      removeThinking();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        appendBotMsg(`<div class="error-bubble">Error: ${escHtml(JSON.stringify(err.detail))}</div>`);
+      } else {
+        appendBotMsg(renderBotBubble(await res.json()));
+      }
+    } catch(e) {
+      removeThinking();
+      appendBotMsg(`<div class="error-bubble">Could not reach the server.</div>`);
+    } finally {
+      sendBtn.disabled = false; queryEl.focus();
+    }
+  }
+</script>
+</body>
+</html>
